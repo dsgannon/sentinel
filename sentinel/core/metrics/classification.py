@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.metrics import roc_auc_score
 from scipy.stats import ks_2samp
 
@@ -104,3 +105,58 @@ def ks_statistic(y_true, y_prob):
     neg = y_prob[y_true == 0]
     result = ks_2samp(pos, neg)
     return result.statistic, result.pvalue
+
+def lift_table(y_true, y_prob, n_bins=10):
+    """
+    Compute a decile lift table for a binary classification model.
+
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        True binary labels (0 or 1).
+    y_prob : array-like of shape (n_samples,)
+        Predicted probabilities for the positive class.
+    n_bins : int, default 10
+        Number of equal-sized bins to split predictions into.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns: decile, n, n_pos, pos_rate,
+        cumulative_pos_pct, lift. Sorted from highest to lowest
+        predicted probability.
+    """
+    y_true = np.array(y_true)
+    y_prob = np.array(y_prob)
+
+    # sort by predicted probability highest to lowest
+    sorted_indices = np.argsort(y_prob)[::-1]
+    y_true_sorted = y_true[sorted_indices]
+
+    # overall positive rate
+    overall_pos_rate = y_true.sum()/len(y_true)
+
+    # split into deciles
+    deciles = np.array_split(y_true_sorted, n_bins)
+
+    rows = []
+    total_pos = y_true.sum()
+    cumulative_pos = 0
+
+    for i, decile in enumerate(deciles):
+        n = len(decile)
+        n_pos = decile.sum()
+        pos_rate = n_pos/n
+        cumulative_pos += n_pos
+        cumulative_pos_pct = cumulative_pos/total_pos
+        lift = pos_rate / overall_pos_rate
+        rows.append({
+            'decile': i + 1,
+            'n': n,
+            'n_pos': n_pos,
+            'pos_rate': round(pos_rate, 4),
+            'cumulative_pos_pct': round(cumulative_pos_pct, 4),
+            'lift': round(lift, 4)
+        })
+
+    return pd.DataFrame(rows)
