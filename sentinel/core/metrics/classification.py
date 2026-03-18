@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics import roc_auc_score
-
+from scipy.stats import ks_2samp
 
 def roc_auc(y_true, y_prob):
     """
@@ -58,3 +58,49 @@ def roc_auc_with_ci(y_true, y_prob, n_bootstrap=1000):
     upper = np.percentile(scores, 97.5)
     return auc, lower, upper
 
+
+def gini(y_true, y_prob):
+    """
+    Compute Gini Coefficient
+
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        True binary labels (0 or 1).
+    y_prob : array-like of shape (n_samples,)
+        Predicted probabilities for the positive class.
+
+    Returns
+    -------
+    float
+        Gini coeficient between 0 and 1.
+    """
+    return 2 * roc_auc(y_true, y_prob) - 1 
+
+def ks_statistic(y_true, y_prob):
+    """
+    Compute the Kolmogorov-Smirnov statistic.
+
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        True binary labels (0 or 1).
+    y_prob : array-like of shape (n_samples,)
+        Predicted probabilities for the positive class.
+
+    Returns
+    -------
+    statistic : float                                                                         
+        The maximum distance between the cumulative distribution of predicted probabilities
+        for positives versus negatives. A value between 0 and 1 where higher means better
+        separation between the two classes.                                              
+    pvalue : float                                                                       
+        The probability of observing this much separation by chance if the model had no real
+        discriminatory power. A small p-value (typically < 0.05) means the separation is
+        statistically significant — the model is genuinely distinguishing between classes,
+        not just getting lucky.
+    """
+    pos = y_prob[y_true == 1]    
+    neg = y_prob[y_true == 0]
+    result = ks_2samp(pos, neg)
+    return result.statistic, result.pvalue
