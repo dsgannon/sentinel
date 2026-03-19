@@ -1,0 +1,16 @@
+<!DOCTYPE html>                                                                     
+  <html>                                                                              
+  <head><title>Sentinel Validation Report</title></head>
+  <body>                                                                              
+    <h1>Model Validation Report</h1>
+    <p><strong>Model:</strong> {{ model_name }}</p>                                   
+    <p><strong>Date:</strong> {{ validation_date }}</p>                               
+    <p><strong>Observations:</strong> {{ dataset_info.n_observations }}</p>           
+                                                                                      
+    <h2>Metrics</h2>                                                                  
+    {% for key, value in metrics.items() %}                                             
+      <p>{{ key }}: {{ value }}</p>                                                     
+    {% endfor %}                                                  
+                                                                                      
+  </body>         
+  </html> 
