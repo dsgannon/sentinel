@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import warnings
 
 def psi(expected, actual, n_bins=10):
@@ -44,3 +45,43 @@ def psi(expected, actual, n_bins=10):
     if psi_value > 0.25:
         warnings.warn(f"PSI={psi_value:.3f} exceeds 0.25 — major population shift detected.")
     return psi_value
+
+def csi(expected_df, actual_df, n_bins=10):
+    """
+    Compute Characteristic Stability Index (CSI) for each feature.
+
+    Runs PSI on every column in the DataFrame to identify which
+    features are driving population shift. Useful for diagnosing
+    high PSI scores at the feature level.
+
+    Parameters
+    ----------
+    expected_df : pd.DataFrame
+        Feature values from the reference population (training data).
+    actual_df : pd.DataFrame
+        Feature values from the current scoring population.
+    n_bins : int, default 10
+        Number of bins to use for each feature's PSI calculation.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns: feature, csi, flag.
+        flag is 'stable' (<0.10), 'monitor' (0.10-0.25),
+        or 'unstable' (>0.25).
+    """
+    result = []
+    for col in expected_df.columns:
+        csi_value = psi(expected_df[col], actual_df[col], n_bins)
+        if csi_value < 0.10:
+            flag = 'stable'
+        elif csi_value < 0.25:
+            flag = 'monitor'
+        else:
+            flag = 'unstable'
+        result.append({
+            'feature': col,
+            'csi': round(csi_value, 4),
+            'flag': flag
+        })
+    return pd.DataFrame(result)

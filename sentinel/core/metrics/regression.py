@@ -85,3 +85,29 @@ def r2(y_true, y_pred):
     SS_res = ((y_true - y_pred)**2).sum()
     SS_tot = ((y_true - np.mean(y_true))**2).sum()
     return 1 - (SS_res / SS_tot)
+
+def theil_u(y_true, y_pred):
+    """
+    Compute Theil's U statistic.
+
+    Compares model accuracy against a naive no-change forecast.
+    Values less than 1 indicate the model outperforms the naive baseline.
+
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        True continuous target values.
+    y_pred : array-like of shape (n_samples,)
+        Predicted continuous values.
+
+    Returns
+    -------
+    float
+        Theil's U. < 1 means model beats naive forecast,
+        1 means equal, > 1 means worse than naive.
+    """
+    naive_pred = y_true[:-1]
+    y_true_trimmed = y_true[1:]
+    rmse1 = rmse(y_true_trimmed, y_pred[1:])
+    rmse2 = rmse(y_true_trimmed, naive_pred)
+    return rmse1/rmse2
