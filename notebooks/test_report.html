@@ -1,20 +1,131 @@
-<!DOCTYPE html>                                                                     
-  <html>                                                                              
-  <head><title>Sentinel Validation Report</title></head>
-  <body>                                                                              
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>Sentinel Validation Report</title>
+    <style>
+      @import
+  url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+      body {
+        font-family: 'Share Tech Mono', monospace;
+        max-width: 900px;
+        margin: 40px auto;
+        background: #0d0010;
+        color: #e0d0f0;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #ff9900;
+        border-bottom: 2px solid #ff9900;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-shadow: 0 0 12px #ff9900;
+      }
+      h2 {
+        color: #cc66ff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 30px;
+        text-shadow: 0 0 8px #cc66ff;
+      }
+      .meta {
+        background: #1a0025;
+        border: 1px solid #ff9900;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .meta p { margin: 4px 0; }
+      .meta strong { color: #ffcc00; }
+      .flag-stable { color: #00ff99; }
+      .flag-monitor { color: #ffcc00; }
+      .flag-unstable { color: #ff4444; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th {
+        background: #1a0025;
+        color: #ff9900;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ff9900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #2a0040;
+        color: #e0d0f0;
+      }
+      tr:nth-child(even) { background: #120018; }
+      tr:hover { background: #220033; }
+    </style>
+  </head>
+  <body>
+
     <h1>Model Validation Report</h1>
-    <p><strong>Model:</strong> credit_risk_v2</p>                                   
-    <p><strong>Date:</strong> 2026-03-19</p>                               
-    <p><strong>Observations:</strong> 5000</p>           
-                                                                                      
-    <h2>Metrics</h2>                                                                  
-                                                 
-      <p>auc: 0.82</p>                                                     
-                                                 
-      <p>mae: 3.4</p>                                                     
-                                                 
-      <p>psi: 0.07</p>                                                     
-                                                      
-                                                                                      
-  </body>         
-  </html> 
+
+    <div class="meta">
+      <p><strong>Model:</strong> credit_risk_v2</p>
+      <p><strong>Date:</strong> 2026-03-19</p>
+      <p><strong>Observations:</strong> 5000</p>
+      <p><strong>Date Range:</strong> 2024-2025</p>
+    </div>
+
+    <h2>Metrics</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>auc</td><td>0.82</td></tr>
+      
+      <tr><td>mae</td><td>3.4</td></tr>
+      
+    </table>
+
+    
+    <h2>Drift</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>PSI</td><td>0.07</td></tr>
+      <tr>
+        <td>Flag</td>
+        <td class="flag-stable">stable</td>
+      </tr>
+    </table>
+    
+
+    
+    <h2>Fairness</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>disparate_impact_ratio</td><td>0.85</td></tr>
+      
+      <tr><td>demographic_parity_difference</td><td>-0.04</td></tr>
+      
+      <tr><td>equalized_odds_gap</td><td>0.03</td></tr>
+      
+    </table>
+    
+
+    
+
+    
+    <h2>Challenger Comparison</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>champ_auc</td><td>0.82</td></tr>
+      
+      <tr><td>chal_auc</td><td>0.86</td></tr>
+      
+      <tr><td>challenger_wins</td><td>True</td></tr>
+      
+    </table>
+    
+
+  </body>
+  </html>

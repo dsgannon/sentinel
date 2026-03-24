@@ -1,0 +1,664 @@
+DEVELOPMENT PLAN
+
+Sentinel
+ML Model Validation Toolkit
+SR 11-7 Compliant · AWS-Native · Gen AI Powered
+March 2026
+
+What It Is
+A Python library and AWS-native platform for SR 11-7 compliant model risk management. Covers the full
+validation lifecycle: initial validation, ongoing monitoring, fairness analysis, stress testing, and regulatory
+documentation — built for financial services and insurance, where model governance is a regulatory
+requirement.
+Why this gap exists: Existing tools (Evidently, WhyLabs, SageMaker Model Monitor) solve data drift and
+operational monitoring. None are designed around the regulatory validation workflow — the challenger
+model comparison, conceptual soundness framework, tiered risk classification, and immutable audit trail.
+This toolkit fills that gap.
+
+Tech Stack
+Layer
+
+Technology
+
+Rationale
+
+Core library
+
+Python 3.11+
+
+pip-installable, framework-agnostic
+
+Statistical
+
+scipy, statsmodels, numpy
+
+Rigorous tests, not thin wrappers
+
+ML integration
+
+scikit-learn, XGBoost, SHAP
+
+Standard model interfaces
+
+Database
+
+PostgreSQL (RDS)
+
+Model registry, immutable audit trail
+
+Cloud
+
+AWS (S3, Lambda, SageMaker, EventBridge,
+
+Cert path alignment
+
+engine
+
+Bedrock)
+Dashboard
+
+Streamlit
+
+Rapid stakeholder UI
+
+API
+
+FastAPI
+
+REST interface for CI/CD integration
+
+Reports
+
+Jinja2 + WeasyPrint
+
+HTML → PDF regulatory reports
+
+LLM
+
+Claude API via Amazon Bedrock
+
+Conceptual review, autodocumentation
+
+IaC
+
+Terraform / AWS CDK
+
+One-command infrastructure
+deployment
+
+CI/CD
+
+GitHub Actions
+
+Automated test + PyPI publish
+
+Sentinel — ML Model Validation Toolkit | Page 2 of 11
+
+Repository Structure
+
+Sentinel — ML Model Validation Toolkit | Page 3 of 11
+
+sentinel/
+├── sentinel/
+│
+├── core/
+│
+│
+├── metrics/
+│
+│
+│
+├── classification.py
+│
+│
+│
+├── regression.py
+│
+│
+│
+├── calibration.py
+│
+│
+│
+├── ranking.py
+│
+│
+│
+└── survival.py
+│
+│
+├── statistical_tests/
+│
+│
+│
+├── drift.py
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+│
+
+# AUC-ROC, KS, GINI, lift/cap curves
+# MAE, RMSE, MAPE, Theil's U, R²
+# ECE, ACE, reliability diagrams, Brier score
+# Concordance ratio, AR, Lorenz curve
+# C-index, calibration for survival models
+# PSI, CSI, KS test, chi-square, Jensen-Shannon
+
+│
+│
+├── performance.py
+# Binomial test on AUC, t-tests, F-tests
+│
+│
+├── stability.py
+# PSI by segment, vintage analysis
+│
+│
+└── corrections.py
+# Bonferroni, Benjamini-Hochberg (FDR control)
+│
+├── uncertainty/
+│
+│
+├── bootstrap.py
+# Bootstrap CIs (percentile + BCa)
+│
+│
+├── conformal.py
+# Conformal prediction intervals
+│
+│
+└── bayes.py
+# Bayesian credible intervals
+│
+├── fairness/
+│
+│
+├── disparate_impact.py # 4/5ths rule, demographic parity, equalized odds
+│
+│
+├── proxy_detection.py
+# Protected class proxy identification
+│
+│
+├── intersectional.py
+# Multi-attribute fairness
+│
+│
+└── remediation.py
+# Reweighting, threshold adjustment suggestions
+│
+├── sensitivity/
+│
+│
+├── perturbation.py
+# One-at-a-time feature perturbation
+│
+│
+├── shap_analysis.py
+# SHAP global/local, stability over time
+│
+│
+└── partial_dependence.py
+│
+└── stress_testing/
+│
+├── scenarios.py
+# Macroeconomic stress scenarios
+│
+└── adversarial.py
+# Adversarial sample generation
+├── challenger/
+│
+├── comparison.py
+# Champion vs. challenger statistical tests
+│
+├── benchmarks.py
+# Logistic regression / naive baselines
+│
+└── ensemble.py
+# Blending analysis
+├── registry/
+│
+├── model_registry.py
+# Model inventory, validation status
+│
+├── risk_tiering.py
+# Tier 1/2/3 per SR 11-7
+│
+├── audit_trail.py
+# Immutable append-only audit log
+│
+└── lineage.py
+# Training data + feature lineage
+├── reporting/
+│
+├── sr11_7.py
+# SR 11-7 compliant validation report
+│
+├── model_card.py
+# Model card (Google format + extensions)
+│
+├── executive_summary.py
+# Plain English summary for leadership
+│
+└── templates/
+# Jinja2 HTML/PDF templates
+├── monitoring/
+│
+├── drift_monitor.py
+# Scheduled PSI/CSI monitoring
+│
+├── performance_monitor.py
+# AUC/KS degradation detection
+│
+└── alerting.py
+# Alert routing (email, Slack, PagerDuty)
+├── aws/
+│
+├── s3_artifacts.py
+# Model artifact storage/retrieval
+│
+├── sagemaker.py
+# SageMaker model integration
+│
+├── lambda_handler.py
+# Serverless monitoring trigger
+│
+├── cloudwatch.py
+# Metric publishing
+│
+└── bedrock_llm.py
+# Claude via Bedrock
+├── llm/
+│
+├── conceptual_review.py
+# LLM-powered soundness assessment
+│
+├── doc_generator.py
+# Auto-generate validation narratives
+│
+└── regulatory_lookup.py
+# RAG over SR 11-7 / OCC 2011-12 / EU AI Act
+
+Sentinel — ML Model Validation Toolkit | Page 4 of 11
+
+│
+├── dashboard/
+│
+│
+└── app.py
+│
+├── api/
+│
+│
+└── app.py
+│
+└── cli/
+│
+└── validate.py
+├── tests/
+│
+├── unit/
+│
+├── integration/
+│
+└── fixtures/
+├── docs/
+
+# Streamlit model registry + monitoring UI
+# FastAPI REST endpoints
+# sentinel validate model.pkl --config val.yaml
+
+# Synthetic datasets for testing
+
+├── examples/
+│
+├── credit_risk/
+│
+├── insurance_pricing/
+│
+└── fraud_detection/
+├── pyproject.toml
+├── Dockerfile
+└── .github/workflows/
+
+Phase 1 — Core Library Foundation
+
+3 Weeks
+
+Goal: A pip-installable package that produces rigorous metrics with proper uncertainty quantification. No
+AWS, no dashboard yet — something usable at work immediately.
+
+Week 1 — Scaffolding + Classification Metrics
+• pyproject.toml with proper packaging (hatchling)
+• GitHub Actions: lint (ruff), type check (mypy), test (pytest), coverage gate
+• classification.py : AUC-ROC with bootstrap CI, KS statistic + p-value, GINI coefficient, lift table,
+cap curve, precision-recall AUC
+• calibration.py : reliability diagram, ECE, Brier score decomposition (reliability + resolution +
+uncertainty)
+• Full unit test suite with synthetic data fixtures
+
+Week 2 — Regression + Statistical Tests
+• regression.py : MAE, RMSE, MAPE, Theil's U, residual diagnostics (heteroscedasticity,
+autocorrelation)
+• drift.py : PSI (the workhorse of insurance validation), CSI by feature, KS test for continuous
+features, chi-square for categorical, Jensen-Shannon divergence
+• corrections.py : Bonferroni and Benjamini-Hochberg FDR control — critical when testing dozens of
+features simultaneously
+
+Week 3 — Uncertainty Quantification + Challenger Comparison
+• bootstrap.py : percentile bootstrap and BCa (bias-corrected accelerated) for any metric
+• comparison.py : DeLong test for AUC comparison (exact, not bootstrap), two-sample tests on KS
+and GINI, effect size alongside p-values
+
+Sentinel — ML Model Validation Toolkit | Page 5 of 11
+
+• Basic HTML report output via Jinja2
+Deliverable: pip install sentinel-mlval works. Validate any sklearn-compatible model in under 10
+lines of code:
+from sentinel import Validator
+val = Validator(model, X_test, y_test)
+report = val.run()
+report.save("validation_report.html")
+
+Phase 2 — Statistical Rigor + Fairness
+
+3 Weeks
+
+Goal: The module a regulator would actually care about.
+
+Week 4 — Stability Analysis
+• PSI by score decile (vintage analysis) — track population shifts over time
+• PSI threshold alerts: green (<0.1), yellow (0.1–0.25), red (>0.25)
+• Feature-level CSI for top N predictors
+• Gini stability over time — plot Gini by monthly cohort
+• Vintage analysis: performance curves by origination cohort
+
+Week 5 — Fairness Module
+• Disparate impact: 4/5ths rule (EEOC standard), demographic parity difference, equalized odds,
+predictive parity, individual fairness metric
+• Proxy detection: mutual information between features and protected attributes, permutation
+importance with protected class correlation, redlining flag for geographic features correlated with
+race/income
+• Bootstrap CIs on all fairness metrics
+• Intersectional fairness: performance by (race × gender) or (age × geography)
+
+Week 6 — Sensitivity + Stress Testing
+• Perturbation analysis: one-at-a-time feature shifts ±1 std, tornado diagram output
+• SHAP stability: do feature importances shift across time splits?
+• Stress scenarios: predefined macroeconomic shocks (2008 crisis, COVID, rate spike), custom
+scenario API, expected loss under stress
+Deliverable: Full SR 11-7-style statistical validation battery with properly corrected p-values and
+bootstrap CIs throughout.
+
+Sentinel — ML Model Validation Toolkit | Page 6 of 11
+
+Phase 3 — Regulatory Compliance Layer
+
+3 Weeks
+
+Goal: Produce documentation that a model risk examiner would accept.
+
+Week 7 — SR 11-7 Report Engine
+Structured HTML/PDF report with all required sections:
+1. Model overview and purpose
+2. Conceptual soundness assessment
+3. Data quality findings
+4. Performance results (with CIs)
+5. Benchmarking vs. challenger model
+6. Limitations and assumptions
+7. Ongoing monitoring plan
+8. Conclusions and recommendations
+Auto-populates quantitative sections from validation run. Narrative sections left for human input or LLM
+fill-in (Phase 6).
+
+Week 8 — Model Registry + Risk Tiering
+• Model registry: PostgreSQL-backed inventory with model_id, owner, type, purpose, training_date,
+validation_status, next_review_date, tier
+• Risk tiering: Tier 1 (high — drives significant financial decisions), Tier 2 (moderate), Tier 3 (low /
+immaterial) with auto-classification heuristics
+• Audit trail: immutable append-only log of all validation actions with user, timestamp, and data hash
+
+Week 9 — Model Card + Lineage
+• Google Model Card format with financial services extensions, auto-populated from validation
+metadata
+• Feature provenance and dependency graph
+• Executive summary — plain English version for non-technical stakeholders
+Deliverable: Full regulatory documentation package auto-generated from a single validation run.
+
+Phase 4 — AWS Integration
+
+4 Weeks
+
+Goal: Production-ready cloud deployment. Directly maps to Solutions Architect + ML Engineer cert
+objectives.
+
+Sentinel — ML Model Validation Toolkit | Page 7 of 11
+
+Week 10 — S3 + Artifact Management
+• Version-controlled artifact paths: s3://sentinel-artifacts/{model_id}/{version}/
+• Validation report storage and presigned URL sharing
+• Model registry backed by RDS PostgreSQL with Alembic migrations
+
+Week 11 — SageMaker Integration
+• Pull models from SageMaker Model Registry
+• Run validation against SageMaker Endpoints
+• SageMaker Experiments integration for tracking
+• SageMaker Processing Job wrapper — run Sentinel as a managed job
+• Model Monitor baseline creation from Sentinel results
+
+Week 12 — Lambda + EventBridge Monitoring
+• Serverless monitoring trigger: runs PSI/CSI check on new data batch, publishes to CloudWatch, fires
+SNS alert on threshold breach
+• EventBridge rule: monthly scheduled validation per registered model
+• Alert routing: email, Slack, PagerDuty with severity tiers and suppression rules
+
+Week 13 — CloudWatch + IaC
+• CloudWatch dashboard per model: PSI trend, KS trend, Gini trend
+• Terraform / CDK templates: RDS, S3, Lambda, EventBridge, IAM (least privilege)
+• One-command deployment: sentinel aws deploy --env prod
+Deliverable: Full AWS infrastructure deployable from a single command. Ongoing monitoring runs
+serverlessly.
+
+Phase 5 — Dashboard + API
+
+3 Weeks
+
+Goal: Stakeholder-facing interface and CI/CD integration point.
+
+Week 14 — Streamlit Dashboard
+• Model registry home: all models, validation status, next review dates, risk tier
+• Model detail: KS/Gini/AUC trend charts, PSI heatmap by month, fairness metrics by group, SHAP
+feature importance, validation history timeline
+• Alert dashboard: active warnings, suppression management, report download
+
+Week 15 — FastAPI REST Layer
+• POST /validate — submit model + data, receive JSON results
+
+Sentinel — ML Model Validation Toolkit | Page 8 of 11
+
+• GET /registry/models — list all registered models with status
+• GET /registry/models/{id}/history — full validation history
+• POST /registry/models/{id}/monitor — trigger ad-hoc monitoring run
+• Authentication via AWS Cognito or API key; OpenAPI docs auto-generated
+
+Week 16 — CLI + CI/CD Integration
+# Run full validation
+sentinel validate --model model.pkl --data holdout.parquet --config val.yaml
+# Check model registry
+sentinel registry list --status pending
+# Deploy AWS infrastructure
+sentinel aws deploy --env prod
+# Generate report only
+sentinel report --run-id abc123 --format pdf
+
+GitHub Actions example: validate model on every PR before deployment. Pre-commit hook blocks
+deployment if PSI exceeds threshold.
+Deliverable: Complete interface for humans (dashboard) and systems (API/CLI).
+
+Phase 6 — Gen AI Layer
+
+4 Weeks
+
+Goal: The differentiating feature. Claude via Amazon Bedrock — directly targets Gen AI Developer cert.
+
+Weeks 17–18 — Conceptual Soundness Review
+• Given model description, feature list, training methodology, and use case — Claude reviews against
+SR 11-7 conceptual soundness criteria
+• Outputs structured findings: concerns, questions for the model developer, documented strengths
+• Flags known problematic patterns: target leakage indicators, overfitting signs, inappropriate proxy
+features
+• Compares methodology against published literature for the model type
+
+Week 19 — Auto-Documentation
+• Structured validation results → narrative report sections
+• Example output: "The model demonstrates adequate discriminatory power as evidenced by a KS
+statistic of 0.42 (95% CI: 0.38–0.46), which exceeds the minimum acceptable threshold of 0.30 per
+internal model risk policy..."
+• Drafts limitation section based on fairness findings and stress test results
+
+Sentinel — ML Model Validation Toolkit | Page 9 of 11
+
+• Executive summary in plain English — LLM writes the first draft, human reviews
+
+Week 20 — Regulatory Guidance Lookup
+• RAG over SR 11-7, OCC 2011-12, CFPB fair lending guidance, EU AI Act
+• Natural language queries: "Does my validation approach satisfy the benchmarking requirement in SR
+11-7 section 4?"
+• Citation-backed answers with relevant passage excerpts
+• Gap analysis: given your validation checklist, what is missing per regulation?
+Deliverable: The first model validation toolkit with an LLM layer that understands regulatory requirements
+— not just generic ML concepts.
+
+Milestones Summary
+Phase
+
+Duration
+
+Key Deliverable
+
+1 — Core Library
+
+3 weeks
+
+pip-installable, AUC/KS/GINI/PSI, bootstrap CIs
+
+2 — Statistical Rigor
+
+3 weeks
+
+Fairness module, stress testing, multiple testing correction
+
+3 — Regulatory
+
+3 weeks
+
+SR 11-7 report, model registry, risk tiering
+
+4 — AWS
+
+4 weeks
+
+RDS + S3 + Lambda + EventBridge, Terraform IaC
+
+5 — Dashboard / API
+
+3 weeks
+
+Streamlit UI, FastAPI, CLI
+
+6 — Gen AI
+
+4 weeks
+
+Bedrock/Claude review, auto-docs, regulatory RAG
+
+Total
+
+~5 months
+
+Full production platform
+
+AWS Certification Alignment
+Certification
+
+Sentinel Components
+
+Solutions
+
+RDS design, S3 architecture, Lambda + EventBridge patterns, IAM least-privilege, VPC for
+
+Architect
+
+RDS
+
+ML Engineer
+
+SageMaker integration, Processing Jobs, Model Monitor, MLOps CI/CD pipeline, model
+registry
+
+Gen AI Developer
+
+Bedrock + Claude API, RAG over regulatory documents, prompt engineering for structured
+output
+
+Sentinel — ML Model Validation Toolkit | Page 10 of 11
+
+Competitive Advantage
+Most people building this kind of tool implement generic ML metrics. Three specific advantages make
+this different:
+1. Regulatory fluency — knowing what examiners actually ask for, having answered those questions in
+production at a Tier 1 insurer
+2. Mathematical rigor — multiple testing correction, proper BCa bootstrap methods, and the DeLong
+test for AUC comparison implemented correctly rather than naively
+3. Insurance domain depth — PSI thresholds, vintage analysis, and the fairness issues specific to
+insurance pricing understood at depth, not approximated
+The combination of these three in one open-source package does not currently exist. That is the moat.
+
+Sentinel — ML Model Validation Toolkit | Page 11 of 11
+
+
