@@ -54,3 +54,43 @@ def degradation_alert(df, baseline_metric, threshold):
     """ 
     diff = baseline_metric - df["metric_value"]
     return df[diff > threshold]
+
+def vintage_analysis(df, cohort_col, period_col, y_true_col, y_pred_col, metric_fn):
+    """
+    Track model performance by origination cohort across reporting periods.
+
+    Standard in insurance and lending validation — groups observations by
+    when they entered the portfolio (cohort) and tracks how each cohort's
+    model performance evolves over time. Reveals whether the model degrades
+    faster for older cohorts as economic conditions change.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Full dataset with all observations, cohort labels, and predictions.
+    cohort_col : str
+        Column name identifying the origination cohort (e.g. "origination_quarter").
+    period_col : str
+        Column name identifying the reporting period (e.g. "reporting_quarter").
+    y_true_col : str
+        Column name for ground truth labels.
+    y_pred_col : str
+        Column name for model predictions or probabilities.
+    metric_fn : callable
+        A function with signature f(y_true, y_pred) -> float.
+
+    Returns
+    -------
+    pd.DataFrame
+        Columns: cohort, period, metric_value.
+        One row per cohort-period combination with at least 10 observations.
+    """
+    rows = []
+    for cohort in df[cohort_col].unique():
+        for period in df[period_col].unique():
+            mask = (df[cohort_col] == cohort) & (df[period_col] == period)
+            if mask.sum() < 10:
+                continue
+            score = metric_fn(df[y_true_col][mask], df[y_pred_col][mask])
+            rows.append({"cohort": cohort, "period": period, "metric_value": score})
+    return pd.DataFrame(rows)
