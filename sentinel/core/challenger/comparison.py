@@ -75,3 +75,60 @@ def compare_auc(y_true, prob_champ, prob_chal):
                 chal_ci = (chal_lower, chal_upper),
                 challenger_wins = chal_lower > champ_upper
             )
+
+def _placement_values(pos_scores, neg_scores):
+    return np.array([np.mean(p > neg_scores) for p in pos_scores])
+
+def delong_test(y_true, prob_champ, prob_chal):
+    """
+    Compare two classifier AUCs using the DeLong exact statistical test.
+
+    Preferred over bootstrap AUC comparison when an exact p-value is
+    required. Derives the variance of the AUC difference analytically
+    using U-statistic theory, accounting for the correlation between
+    models scored on the same holdout set.
+
+    Parameters
+    ----------
+    y_true : array-like
+        Binary ground truth labels.
+    prob_champ : array-like
+        Predicted probabilities from the champion model.
+    prob_chal : array-like
+        Predicted probabilities from the challenger model.
+
+    Returns
+    -------
+    dict with keys:
+        champ_auc, chal_auc : float — AUC point estimates.
+        z_statistic : float — DeLong z-statistic for the AUC difference.
+        p_value : float — two-tailed p-value.
+        challenger_wins : bool — True if challenger AUC is higher and p_value < 0.05.
+    """
+    y_true = np.array(y_true)
+    prob_champ = np.array(prob_champ)
+    prob_chal = np.array(prob_chal)
+    pos_champ = prob_champ[y_true == 1]
+    neg_champ = prob_champ[y_true == 0]
+    pos_chal = prob_chal[y_true == 1]
+    neg_chal = prob_chal[y_true == 0]
+
+    v_champ = _placement_values(pos_champ, neg_champ)
+    v_chal = _placement_values(pos_chal, neg_chal)
+
+    n_pos = len(pos_champ)
+
+    auc_champ = np.mean(v_champ)
+    auc_chal = np.mean(v_chal)
+
+    var = (np.var(v_champ) + np.var(v_chal) - 2 * np.cov(v_champ, v_chal)[0,1]) / n_pos
+
+    z = (auc_chal - auc_champ) / np.sqrt(var) 
+    p_value = 2 * (1 - norm.cdf(np.abs(z)))
+    return dict(
+                champ_auc = champ_auc, 
+                chal_auc = chal_auc,
+                z_statistic = z,
+                p_value = p_value,
+                challenger_wins = auc_chal > auc_champ and p_value < 0.05
+            )
