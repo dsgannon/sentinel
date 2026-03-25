@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 from scipy.stats import ks_2samp
+from sklearn.metrics import roc_auc_score, average_precision_score
 
 def roc_auc(y_true, y_prob):
     """
@@ -160,3 +161,74 @@ def lift_table(y_true, y_prob, n_bins=10):
         })
 
     return pd.DataFrame(rows)
+
+def pr_auc(y_true, y_prob):
+     """
+    Compute the Precision-Recall AUC (Average Precision Score).
+
+    Preferred over ROC-AUC for imbalanced datasets where the positive
+    class is rare. A random classifier achieves a PR-AUC equal to the
+    base rate, making it a more honest metric than ROC-AUC in imbalanced
+    settings.
+
+    Parameters
+    ----------
+    y_true : array-like
+        Binary ground truth labels.
+    y_prob : array-like
+        Predicted probabilities for the positive class.
+
+    Returns
+    -------
+    float
+        PR-AUC score between 0 and 1. Higher is better.
+    """
+    return average_precision_score(y_true, y_prob)
+
+
+def cap_curve(y_true, y_prob):
+    """
+    Compute a Cumulative Accuracy Profile (CAP) curve.
+
+    Measures how well the model captures positives when scoring
+    the population from highest to lowest predicted probability.
+    The Accuracy Ratio (AR) summarizes the curve as a single number:
+    0 = random, 1 = perfect.
+
+    Parameters
+    ----------
+    y_true : array-like
+        Binary ground truth labels (0 or 1).
+    y_prob : array-like
+        Predicted probabilities for the positive class.
+
+    Returns
+    -------
+    dict with keys:
+        x : np.ndarray — population percentages from 0 to 1.
+        y_model : np.ndarray — cumulative positive capture rate for the model.
+        y_random : np.ndarray — random baseline (diagonal line).
+        y_perfect : np.ndarray — perfect model curve.
+        accuracy_ratio : float — area between model and random divided by
+            area between perfect and random. Higher is better.
+    """
+    y_true = np.array(y_true)
+    y_prob = np.array(y_prob)
+
+    # sort by predicted probability highest to lowest
+    sorted_indices = np.argsort(y_prob)[::-1]
+    y_true_sorted = y_true[sorted_indices]
+
+    x = np.linspace(0, 1, len(y_true))
+    total_pos = y_true.sum()
+    y_model = np.cumsum(y_true_sorted) / total_pos
+
+    y_random = x
+    y_perfect = np.minimum(x / (total_pos / len(y_true)), 1.0)
+    ar = np.trapz(y_model - y_random, x ) / np.trapz(y_perfect - y_random, x)
+    return dict(x = x, 
+                y_model = y_model,
+                y_random = y_random,
+                y_perfect = y_perfect,
+                accuracy_ratio = ar
+            )       
