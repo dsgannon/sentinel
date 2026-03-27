@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>SR 11-7 Model Validation Report</title>
+    <style>
+      @import
+  url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+      body {
+        font-family: 'Share Tech Mono', monospace;
+        max-width: 960px;
+        margin: 40px auto;
+        background: #0d0010;
+        color: #e0d0f0;
+        line-height: 1.7;
+      }
+      h1 {
+        color: #ff9900;
+        border-bottom: 2px solid #ff9900;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-shadow: 0 0 12px #ff9900;
+      }
+      h2 {
+        color: #cc66ff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 40px;
+        border-left: 4px solid #cc66ff;
+        padding-left: 12px;
+        text-shadow: 0 0 8px #cc66ff;
+      }
+      h3 {
+        color: #ffcc00;
+        margin-top: 20px;
+      }
+      .meta {
+        background: #1a0025;
+        border: 1px solid #ff9900;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+      }
+      .meta p { margin: 4px 0; }
+      .meta strong { color: #ffcc00; }
+      .narrative {
+        background: #120018;
+        border-left: 3px solid #cc66ff;
+        padding: 12px 16px;
+        margin: 10px 0;
+        color: #c0b0d0;
+      }
+      .placeholder {
+        background: #1a0010;
+        border-left: 3px solid #ff4444;
+        padding: 12px 16px;
+        margin: 10px 0;
+        color: #ff8888;
+        font-style: italic;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th {
+        background: #1a0025;
+        color: #ff9900;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ff9900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #2a0040;
+        color: #e0d0f0;
+      }
+      tr:nth-child(even) { background: #120018; }
+      tr:hover { background: #220033; }
+      .section-number {
+        color: #ff9900;
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>SR 11-7 Model Validation Report</h1>
+
+    <div class="meta">
+      <p><strong>Model:</strong> credit_risk_v2</p>
+      <p><strong>Validation Date:</strong> 2026-03-27</p>
+      <p><strong>Observations:</strong> 5000</p>
+      <p><strong>Date Range:</strong> 2024-2025</p>
+    </div>
+
+    <!-- Section 1: Model Overview -->
+    <h2><span class="section-number">1.</span> Model Overview and Purpose</h2>
+    
+    <div class="narrative">Logistic regression model predicting 12-month default probability for consumer credit applications.</div>
+    
+
+    <!-- Section 2: Conceptual Soundness -->
+    <h2><span class="section-number">2.</span> Conceptual Soundness Assessment</h2>
+    
+    <div class="narrative">Model methodology is consistent with industry standard credit scoring practice.</div>
+    
+
+    <!-- Section 3: Data Quality -->
+    <h2><span class="section-number">3.</span> Data Quality Findings</h2>
+    
+    <div class="placeholder">[PLACEHOLDER] Document data sources, completeness,
+  representativeness, and any data quality issues identified.</div>
+    
+
+    <!-- Section 4: Performance Results -->
+    <h2><span class="section-number">4.</span> Performance Results</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>AUC-ROC</td><td>0.82</td></tr>
+      
+      <tr><td>KS Statistic</td><td>0.44</td></tr>
+      
+      <tr><td>Gini</td><td>0.64</td></tr>
+      
+      <tr><td>Brier Score</td><td>0.12</td></tr>
+      
+      <tr><td>PSI</td><td>0.07</td></tr>
+      
+    </table>
+
+    <!-- Section 5: Benchmarking -->
+    <h2><span class="section-number">5.</span> Benchmarking vs. Challenger Model</h2>
+    
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>champ_auc</td><td>0.82</td></tr>
+      
+      <tr><td>chal_auc</td><td>0.86</td></tr>
+      
+      <tr><td>z_statistic</td><td>2.14</td></tr>
+      
+      <tr><td>p_value</td><td>0.032</td></tr>
+      
+      <tr><td>challenger_wins</td><td>True</td></tr>
+      
+    </table>
+    
+
+    <!-- Section 6: Limitations -->
+    <h2><span class="section-number">6.</span> Limitations and Assumptions</h2>
+    
+    <div class="narrative">Model was trained on 2020-2023 data and may not reflect post-2024 economic conditions.</div>
+    
+
+    <!-- Section 7: Monitoring Plan -->
+    <h2><span class="section-number">7.</span> Ongoing Monitoring Plan</h2>
+    
+    <div class="placeholder">[PLACEHOLDER] Specify monitoring frequency, KPIs, PSI
+  thresholds, and escalation procedures.</div>
+    
+
+    <!-- Section 8: Conclusions -->
+    <h2><span class="section-number">8.</span> Conclusions and Recommendations</h2>
+    
+    <div class="placeholder">[PLACEHOLDER] Summarize validation findings and provide a
+   recommendation: approve, approve with conditions, or reject.</div>
+    
+
+  </body>
+  </html>

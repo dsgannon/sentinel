@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>SR 11-7 Model Validation Report</title>
+    <style>
+      @import
+  url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+      body {
+        font-family: 'Share Tech Mono', monospace;
+        max-width: 960px;
+        margin: 40px auto;
+        background: #0d0010;
+        color: #e0d0f0;
+        line-height: 1.7;
+      }
+      h1 {
+        color: #ff9900;
+        border-bottom: 2px solid #ff9900;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-shadow: 0 0 12px #ff9900;
+      }
+      h2 {
+        color: #cc66ff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 40px;
+        border-left: 4px solid #cc66ff;
+        padding-left: 12px;
+        text-shadow: 0 0 8px #cc66ff;
+      }
+      h3 {
+        color: #ffcc00;
+        margin-top: 20px;
+      }
+      .meta {
+        background: #1a0025;
+        border: 1px solid #ff9900;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+      }
+      .meta p { margin: 4px 0; }
+      .meta strong { color: #ffcc00; }
+      .narrative {
+        background: #120018;
+        border-left: 3px solid #cc66ff;
+        padding: 12px 16px;
+        margin: 10px 0;
+        color: #c0b0d0;
+      }
+      .placeholder {
+        background: #1a0010;
+        border-left: 3px solid #ff4444;
+        padding: 12px 16px;
+        margin: 10px 0;
+        color: #ff8888;
+        font-style: italic;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th {
+        background: #1a0025;
+        color: #ff9900;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ff9900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #2a0040;
+        color: #e0d0f0;
+      }
+      tr:nth-child(even) { background: #120018; }
+      tr:hover { background: #220033; }
+      .section-number {
+        color: #ff9900;
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>SR 11-7 Model Validation Report</h1>
+
+    <div class="meta">
+      <p><strong>Model:</strong> {{ model_name }}</p>
+      <p><strong>Validation Date:</strong> {{ validation_date }}</p>
+      <p><strong>Observations:</strong> {{ dataset_info.n_observations }}</p>
+      <p><strong>Date Range:</strong> {{ dataset_info.date_range }}</p>
+    </div>
+
+    <!-- Section 1: Model Overview -->
+    <h2><span class="section-number">1.</span> Model Overview and Purpose</h2>
+    {% if narrative and narrative.model_purpose %}
+    <div class="narrative">{{ narrative.model_purpose }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Describe the model's intended use, business
+   purpose, and the decisions it supports.</div>
+    {% endif %}
+
+    <!-- Section 2: Conceptual Soundness -->
+    <h2><span class="section-number">2.</span> Conceptual Soundness Assessment</h2>
+    {% if narrative and narrative.conceptual_soundness %}
+    <div class="narrative">{{ narrative.conceptual_soundness }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Assess the theoretical basis for the
+  model's methodology, feature selection rationale, and alignment with domain
+  knowledge.</div>
+    {% endif %}
+
+    <!-- Section 3: Data Quality -->
+    <h2><span class="section-number">3.</span> Data Quality Findings</h2>
+    {% if narrative and narrative.data_quality %}
+    <div class="narrative">{{ narrative.data_quality }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Document data sources, completeness,
+  representativeness, and any data quality issues identified.</div>
+    {% endif %}
+
+    <!-- Section 4: Performance Results -->
+    <h2><span class="section-number">4.</span> Performance Results</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      {% for key, value in performance_metrics.items() %}
+      <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+
+    <!-- Section 5: Benchmarking -->
+    <h2><span class="section-number">5.</span> Benchmarking vs. Challenger Model</h2>
+    {% if challenger_results %}
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      {% for key, value in challenger_results.items() %}
+      <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] No challenger results provided. Run
+  delong_test() or compare_auc() and pass results to challenger_results.</div>
+    {% endif %}
+
+    <!-- Section 6: Limitations -->
+    <h2><span class="section-number">6.</span> Limitations and Assumptions</h2>
+    {% if narrative and narrative.limitations %}
+    <div class="narrative">{{ narrative.limitations }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Document known model limitations,
+  out-of-scope use cases, and key assumptions.</div>
+    {% endif %}
+
+    <!-- Section 7: Monitoring Plan -->
+    <h2><span class="section-number">7.</span> Ongoing Monitoring Plan</h2>
+    {% if narrative and narrative.monitoring_plan %}
+    <div class="narrative">{{ narrative.monitoring_plan }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Specify monitoring frequency, KPIs, PSI
+  thresholds, and escalation procedures.</div>
+    {% endif %}
+
+    <!-- Section 8: Conclusions -->
+    <h2><span class="section-number">8.</span> Conclusions and Recommendations</h2>
+    {% if narrative and narrative.conclusions %}
+    <div class="narrative">{{ narrative.conclusions }}</div>
+    {% else %}
+    <div class="placeholder">[PLACEHOLDER] Summarize validation findings and provide a
+   recommendation: approve, approve with conditions, or reject.</div>
+    {% endif %}
+
+  </body>
+  </html>
