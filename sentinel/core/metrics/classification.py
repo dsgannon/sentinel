@@ -163,7 +163,7 @@ def lift_table(y_true, y_prob, n_bins=10):
     return pd.DataFrame(rows)
 
 def pr_auc(y_true, y_prob):
-     """
+    """
     Compute the Precision-Recall AUC (Average Precision Score).
 
     Preferred over ROC-AUC for imbalanced datasets where the positive
