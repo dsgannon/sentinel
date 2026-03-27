@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>Executive Summary — {{ model_name }}</title>
+    <style>
+      @import
+  url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+      body {
+        font-family: 'Share Tech Mono', monospace;
+        max-width: 960px;
+        margin: 40px auto;
+        background: #0d0010;
+        color: #e0d0f0;
+        line-height: 1.7;
+      }
+      h1 {
+        color: #ff9900;
+        border-bottom: 2px solid #ff9900;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-shadow: 0 0 12px #ff9900;
+      }
+      h2 {
+        color: #cc66ff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 40px;
+        border-left: 4px solid #cc66ff;
+        padding-left: 12px;
+        text-shadow: 0 0 8px #cc66ff;
+      }
+      .meta {
+        background: #1a0025;
+        border: 1px solid #ff9900;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+      }
+      .meta p { margin: 4px 0; }
+      .meta strong { color: #ffcc00; }
+      .approved {
+        background: #001a0d;
+        border: 2px solid #00ff99;
+        color: #00ff99;
+        padding: 15px 20px;
+        border-radius: 4px;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 20px 0;
+        text-shadow: 0 0 8px #00ff99;
+      }
+      .rejected {
+        background: #1a0000;
+        border: 2px solid #ff4444;
+        color: #ff4444;
+        padding: 15px 20px;
+        border-radius: 4px;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 20px 0;
+        text-shadow: 0 0 8px #ff4444;
+      }
+      .conditional {
+        background: #1a1000;
+        border: 2px solid #ffcc00;
+        color: #ffcc00;
+        padding: 15px 20px;
+        border-radius: 4px;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 20px 0;
+        text-shadow: 0 0 8px #ffcc00;
+      }
+      .narrative {
+        background: #120018;
+        border-left: 3px solid #cc66ff;
+        padding: 12px 16px;
+        margin: 10px 0;
+        color: #c0b0d0;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      ul li {
+        margin: 8px 0;
+        color: #e0d0f0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th {
+        background: #1a0025;
+        color: #ff9900;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ff9900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #2a0040;
+        color: #e0d0f0;
+      }
+      tr:nth-child(even) { background: #120018; }
+      tr:hover { background: #220033; }
+    </style>
+  </head>
+  <body>
+
+    <h1>Model Validation Executive Summary</h1>
+
+    <div class="meta">
+      <p><strong>Model:</strong> {{ model_name }}</p>
+      <p><strong>Validation Date:</strong> {{ validation_date }}</p>
+    </div>
+
+    <h2>Overall Result</h2>
+    {% if overall_result == "approved" %}
+    <div class="approved">APPROVED</div>
+    {% elif overall_result == "rejected" %}
+    <div class="rejected">REJECTED</div>
+    {% else %}
+    <div class="conditional">APPROVED WITH CONDITIONS</div>
+    {% endif %}
+
+    <h2>Key Findings</h2>
+    <ul>
+      {% for finding in key_findings %}
+      <li>{{ finding }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Performance Summary</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      {% for key, value in performance_summary.items() %}
+      <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+
+    <h2>Recommendation</h2>
+    <div class="narrative">{{ recommendation }}</div>
+
+  </body>
+  </html>
