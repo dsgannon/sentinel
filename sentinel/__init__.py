@@ -26,3 +26,5 @@ from sentinel.core.reporting.html_report import generate_report
 from sentinel.core.reporting.sr11_7 import sr11_7_report
 from sentinel.core.reporting.model_card import model_card
 from sentinel.core.reporting.executive_summary import executive_summary
+
+from sentinel.validator import Validator

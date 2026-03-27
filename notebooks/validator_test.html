@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>Sentinel Validation Report</title>
+    <style>
+      @import
+  url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+      body {
+        font-family: 'Share Tech Mono', monospace;
+        max-width: 900px;
+        margin: 40px auto;
+        background: #0d0010;
+        color: #e0d0f0;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #ff9900;
+        border-bottom: 2px solid #ff9900;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-shadow: 0 0 12px #ff9900;
+      }
+      h2 {
+        color: #cc66ff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 30px;
+        text-shadow: 0 0 8px #cc66ff;
+      }
+      .meta {
+        background: #1a0025;
+        border: 1px solid #ff9900;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .meta p { margin: 4px 0; }
+      .meta strong { color: #ffcc00; }
+      .flag-stable { color: #00ff99; }
+      .flag-monitor { color: #ffcc00; }
+      .flag-unstable { color: #ff4444; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th {
+        background: #1a0025;
+        color: #ff9900;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ff9900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #2a0040;
+        color: #e0d0f0;
+      }
+      tr:nth-child(even) { background: #120018; }
+      tr:hover { background: #220033; }
+    </style>
+  </head>
+  <body>
+
+    <h1>Model Validation Report</h1>
+
+    <div class="meta">
+      <p><strong>Model:</strong> Test Model</p>
+      <p><strong>Date:</strong> 2026-03-27</p>
+      <p><strong>Observations:</strong> </p>
+      <p><strong>Date Range:</strong> </p>
+    </div>
+
+    <h2>Metrics</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      
+      <tr><td>auc</td><td>0.935292</td></tr>
+      
+      <tr><td>gini</td><td>0.870584</td></tr>
+      
+      <tr><td>ks</td><td>0.772</td></tr>
+      
+      <tr><td>brier_score</td><td>0.09419528174673612</td></tr>
+      
+      <tr><td>ece</td><td>0.06063772938697951</td></tr>
+      
+      <tr><td>pr_auc</td><td>0.9309550755155388</td></tr>
+      
+    </table>
+
+    
+
+    
+
+    
+
+    
+
+  </body>
+  </html>
